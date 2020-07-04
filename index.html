@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+    <title>Air Quality tracker</title>
+    <!-- Ensures that IE and Edge uses the latest version and doesn't emulate an older version -->
+    <meta http-equiv="x-ua-compatible" content="IE=Edge">
+    <meta charset='utf-8'>
+    <!-- Ensures the web page looks good on all screen sizes. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Import the Azure Maps control -->
+    <link rel="stylesheet" href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.css" type="text/css">
+    <script src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/2/atlas.min.js"></script>
+    <style>
+        html,
+        body {
+            margin: 0;
+        }
+        #myMap {
+            height: 100vh;
+            width: 100vw;
+        }
+    </style>
+</head>
+<body>
+    <div id="myMap"></div>
+    <script type="text/javascript">
+        window.addEventListener("DOMContentLoaded", function () {
+            // Pick a pre-defined location of the Microsoft Campus
+            map_center = [-122.136866, 47.642472]
+
+            // Get the users location if permitted - they will be asked for permission before we can get their location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    map_center = [position.coords.longitude, position.coords.latitude]
+                })
+            }
+
+            //Create an instance of the map control using the map key from the Flask app
+            var map = new atlas.Map('myMap', {
+                authOptions: {
+                    authType: 'subscriptionKey',
+                    subscriptionKey: '{{ data.map_key }}'
+                }
+            });
+
+            // when the map is ready, center the map on the users location
+            map.events.add('ready', function () {
+                map.setCamera({
+                    center: map_center,
+                    zoom: 5
+                })
+            })
+        })
+    </script>
+</body>
+</html>
